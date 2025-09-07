@@ -5,6 +5,7 @@
 // Output: 8
 
 #include <stdio.h>
+#include <vector>
 
 unsigned int FlipBitToWin(unsigned int num) {
     if (num == 0U)
@@ -12,65 +13,42 @@ unsigned int FlipBitToWin(unsigned int num) {
     if (num == ~0U)
         return 32U;
     unsigned int maxLen = 0, curLen = 0, preLen = 0;
-    bool preIsZero = 0;
-    // parsing bits
+
     while (num) {
         if (num % 2) {
             curLen++;
-            preIsZero = 0;
         } else {
-            if (preIsZero) {
-                preLen = 0;
-            } else {
-                int temp = preLen + 1 + curLen;
-                maxLen = (maxLen < temp) ? temp : maxLen;
-                preLen = curLen;
-                curLen = 0;
-                preIsZero = 1;
-            }
+            preLen = curLen;
+            curLen = 0;
         }
         num >>= 1;
-    }
-    if (curLen) {
         int temp = preLen + 1 + curLen;
         maxLen = (maxLen < temp) ? temp : maxLen;
     }
     return maxLen;
 }
 int main() {
-    const unsigned int input[] = {
-        1775,  // b'11011101111
-        0,
-        511,   // b'111111111
-        1022,  // b'1111111110
-        2559,  // b'1011111111 = 2048+511
-        0b110111001111U,
-        0b1100111001111U,
-        ~0U,
-        ((~0U>>2)<<2 | 1U),
+    std::vector<std::pair<unsigned int, unsigned int>> test = {
+        {0b11011101111U, 8},
+        {0, 1},
+        {0b111111111U, 10},
+        {0b1111111110U, 10},
+        {0b110111001111U, 6},
+        {0b1100111001111U, 5},
+        {~0U, 32},
+        {((~0U>>2)<<2 | 1U), 32}
     };
-    const unsigned int output[] = {
-        8,
-        1,
-        10,
-        10,
-        10,
-        6,
-        5,
-        32,
-        32,
-    };
-    for (int i = 0; i < sizeof(input) / sizeof(int); i++) {
-        int myOut = FlipBitToWin(input[i]);
-        if (myOut == output[i]) {
+    for (int i = 0; i < test.size(); i++) {
+        int myOut = FlipBitToWin(test[i].first);
+        if (myOut == test[i].second) {
             printf("Test Case #%d OK!\n\n", i);
         } else {
             printf("[Wrong Answer]\n"
                     "Test Case #%u\n"
                     "Input: %u (0x%x)\n"
-                    "MyOut: %u\n"
-                    "Expect: %u\n\n",
-                    i, input[i], input[i], myOut, output[i]);
+                    "Expect: %u\n"
+                    "Output: %u\n\n",
+                    i, test[i].first, test[i].first, myOut, test[i].second);
             return 0;
         }
     }
