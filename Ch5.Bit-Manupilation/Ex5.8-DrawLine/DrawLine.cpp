@@ -15,13 +15,12 @@ void drawLine(vector<uint8_t>& screen, int w, int x1, int x2, int y) {
     unsigned int startByte = y * w / 8 + x1 / 8;
     unsigned int endByte = y * w / 8 + x2 / 8;
     for (int i = startByte; i <= endByte; i++) {
-        if (i == startByte) {
+        if (i == startByte)
             screen[i] |= (0xFF >> (x1 % 8));
-        } else if (i == endByte) {
+        else if (i == endByte)
             screen[i] |= (0xFF << (7 - x2 % 8));
-        } else {
+        else
             screen[i] = 0xFF;
-        }
     }
 }
 
